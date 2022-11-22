@@ -4,6 +4,9 @@ import React, { useState } from "react";
 // Styles
 import "./App.css";
 
+// TODO: TEMP DEMO DATA
+import APARTMENTS from "../demoApartmentData";
+
 // The main React App component
 const App = () => {
     const [searchInput, setSearchInput] = useState("");
@@ -13,9 +16,11 @@ const App = () => {
     const handleSearchInputChange = (event) => {
         setSearchInput(event.target.value);
     }
+    
     const handleMinPriceInputChange = (event) => {
         setMinPriceInput(parseInt(event.target.value));
     }
+
     const handleMaxPriceInputChange = (event) => {
         setMaxPriceInput(parseInt(event.target.value));
     }
@@ -43,8 +48,32 @@ const App = () => {
                 </label>
                 <input type="number" name="max-price" id="max-price" placeholder="Enter maximum price" value={maxPriceInput} onChange={handleMaxPriceInputChange} /> 
             </div>
-            <div className="search-results">
-                
+            <div className="apartments-list">
+                {Object.keys(APARTMENTS).map((apartmentName, index) => {
+                    const apartments = APARTMENTS[apartmentName];
+
+                    return (
+                        <div className="apartment-list" key={index}>
+                            <div className="apartment-header">
+                                <h2>{apartmentName} ({apartments.length})</h2>
+                                <hr />
+                            </div>
+                            <div className="apartment-listings">
+                                {apartments.map((listing, listingIndex) => {
+                                    return (
+                                        <div className="apartment-listing" key={listingIndex}>
+                                            <div className="listing-details">
+                                                <h4>{listing.numBeds} Bed, {listing.numBaths} Bath</h4>
+                                                <p>{listing.squareFeet} sq ft</p>
+                                                <p>Starting at ${listing.startingPrice}</p>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
