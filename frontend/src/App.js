@@ -1,5 +1,6 @@
 // Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Select from "react-select";
 
 // Styles
 import "./App.css";
@@ -7,55 +8,182 @@ import "./App.css";
 // TODO: TEMP DEMO DATA
 import APARTMENTS from "../demoApartmentData";
 
+const selectStyles = {
+    container: (provided) => ({
+        ...provided,
+        borderRadius: "5px",
+        width: "100%",
+        "&:hover": {
+            boxShadow: "var(--vu-dark-gold) 0px 0px 8px",
+        },
+    }),
+    control: (provided) => ({
+        ...provided,
+        border: "2px solid white",
+        "&:focus-within": {
+            border: "2px solid var(--vu-gold)",
+            boxShadow: "var(--vu-dark-gold) 0px 0px 8px",
+        },
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        backgroundColor: state.isSelected ? "black" : "white",
+        color: state.isSelected ? "white" : "black",
+        "&:hover": {
+            backgroundColor: "black",
+            color: "white",
+        },
+    }),
+};
+
 // The main React App component
 const App = () => {
-    const [searchInput, setSearchInput] = useState("");
-    const [minPriceInput, setMinPriceInput] = useState(0);
-    const [maxPriceInput, setMaxPriceInput] = useState(0);
-    
-    const handleSearchInputChange = (event) => {
-        setSearchInput(event.target.value);
-    }
-    
+    const [allApartments, setAllApartments] = useState([]);
+    const [apartmentNames, setApartmentNames] = useState([]);
+    const [apartmentsFilter, setApartmentsFilter] = useState([]); // array of { value: aptName, label: aptName }
+    const [minPriceFilter, setMinPriceFilter] = useState(0);
+    const [maxPriceFilter, setMaxPriceFilter] = useState();
+    const [bedsFilter, setBedsFilter] = useState();
+    const [bathsFilter, setBathsFilter] = useState();
+    const [displayedApartments, setDisplayedApartments] = useState([]);
+
+    const handleApartmentsInputChange = (selectedOptions) => {
+        setApartmentsFilter(selectedOptions);
+    };
+
     const handleMinPriceInputChange = (event) => {
-        setMinPriceInput(parseInt(event.target.value));
-    }
+        setMinPriceFilter(parseInt(event.target.value));
+    };
 
     const handleMaxPriceInputChange = (event) => {
-        setMaxPriceInput(parseInt(event.target.value));
-    }
+        setMaxPriceFilter(parseInt(event.target.value));
+    };
 
-    const handleSearch = () => {
-        alert("You searched for: " + searchInput);
-    }
+    const handleBedsInputChange = (event) => {
+        setBedsFilter(parseInt(event.target.value));
+    };
+
+    const handleBathsInputChange = (event) => {
+        setBathsFilter(parseInt(event.target.value));
+    };
+
+    const handleSubmit = (event) => {
+        setDisplayedApartments(allApartments.filter((apartment) => (
+            (apartmentsFilter.length === 0 || apartmentsFilter.some((option) => option.value === apartment.aptName)) &&
+            (!minPriceFilter || apartment.startingPrice >= minPriceFilter) &&
+            (!maxPriceFilter || apartment.startingPrice <= maxPriceFilter) &&
+            (!bedsFilter || apartment.numBeds === bedsFilter) &&
+            (!bathsFilter || apartment.numBaths === bathsFilter)
+        )));
+        event.preventDefault();
+    };
+
+    // On component mount, fetch apartment data from backend
+    useEffect(() => {
+        setAllApartments(APARTMENTS); // TODO: get apartments from backend
+    }, []);
+
+    // Determine the unique apartment names
+    useEffect(() => {
+        setApartmentNames([...new Set(allApartments.map((apartment) => apartment.aptName))].sort());
+        setDisplayedApartments(allApartments);
+    }, [allApartments]);
 
     return (
         <div className="container">
-            <h1>House Vandy</h1>
-            <h4>Built for Vandy students by Vandy Students</h4>
-            <div className="search-container">
-                <input type="search" id="search-bar" placeholder="Search" value={searchInput} onChange={handleSearchInputChange} />
-                <button onClick={handleSearch}>Search</button>
-            </div>
-            <div className="filters-container">
-                <label htmlFor="min-price">
-                    Min Price
-                </label>
-                <input type="number" name="min-price" id="min-price" placeholder="Enter minimum price" value={minPriceInput} onChange={handleMinPriceInputChange} />
-
-                <label htmlFor="max-price">
-                    Max Price
-                </label>
-                <input type="number" name="max-price" id="max-price" placeholder="Enter maximum price" value={maxPriceInput} onChange={handleMaxPriceInputChange} /> 
-            </div>
+            <h1 className="brand">House Vandy</h1>
+            <p className="slogan">Built for Vandy students by Vandy students!</p>
+            <form onSubmit={handleSubmit}>
+                <div className="search-container">
+                    <Select
+                        options={apartmentNames.map((apartmentName) => ({
+                            value: apartmentName,
+                            label: apartmentName,
+                        }))}
+                        isMulti
+                        value={apartmentsFilter}
+                        onChange={handleApartmentsInputChange}
+                        styles={selectStyles}
+                    />
+                    <input type="submit" id="search-button" value="Apply Filters" />
+                </div>
+                <div className="filters-container">
+                    <label className="filter">
+                        Min Price $
+                        <input
+                            type="number"
+                            name="min-price"
+                            id="min-price"
+                            placeholder="Min. Price"
+                            value={minPriceFilter}
+                            onChange={handleMinPriceInputChange}
+                            min={0}
+                        />
+                    </label>
+                    <label className="filter">
+                        Max Price $
+                        <input
+                            type="number"
+                            name="max-price"
+                            id="max-price"
+                            placeholder="Max. Price"
+                            value={maxPriceFilter}
+                            onChange={handleMaxPriceInputChange}
+                            min={0}
+                        />
+                    </label>
+                    <label className="filter">
+                        Beds
+                        <select
+                            name="beds"
+                            id="num-beds"
+                            value={bedsFilter}
+                            onChange={handleBedsInputChange}
+                        >
+                            <option value={null}>any</option>
+                            {[...Array(4).keys()].map((index) => {
+                                const num = index + 1;
+                                return (
+                                    <option key={num} value={num}>
+                                        {num}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </label>
+                    <label className="filter">
+                        Baths
+                        <select
+                            name="baths"
+                            id="num-baths"
+                            value={bathsFilter}
+                            onChange={handleBathsInputChange}
+                        >
+                            <option value={null}>any</option>
+                            {[...Array(4).keys()].map((index) => {
+                                const num = index + 1;
+                                return (
+                                    <option key={num} value={num}>
+                                        {num}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </label>
+                </div>
+            </form>
             <div className="apartments-list">
-                {Object.keys(APARTMENTS).map((apartmentName, index) => {
-                    const apartments = APARTMENTS[apartmentName];
+                {apartmentNames.map((apartmentName, index) => {
+                    const apartments = displayedApartments.filter(
+                        (apartment) => apartment.aptName === apartmentName
+                    );
 
                     return (
                         <div className="apartment-list" key={index}>
                             <div className="apartment-header">
-                                <h2>{apartmentName} ({apartments.length})</h2>
+                                <h2>
+                                    {apartmentName} ({apartments.length})
+                                </h2>
                                 <hr />
                             </div>
                             <div className="apartment-listings">
@@ -63,9 +191,17 @@ const App = () => {
                                     return (
                                         <div className="apartment-listing" key={listingIndex}>
                                             <div className="listing-details">
-                                                <h4>{listing.numBeds} Bed, {listing.numBaths} Bath</h4>
-                                                <p>{listing.squareFeet} sq ft</p>
-                                                <p>Starting at ${listing.startingPrice}</p>
+                                                <h4>
+                                                    {listing.numBeds} Bed, {listing.numBaths} Bath
+                                                </h4>
+                                                <p>{listing.squareFeet} square-feet</p>
+                                            </div>
+                                            <div className="listing-price-container">
+                                                Starting at
+                                                <p className="listing-price">
+                                                    ${listing.startingPrice.toLocaleString()}
+                                                </p>
+                                                / month
                                             </div>
                                         </div>
                                     );

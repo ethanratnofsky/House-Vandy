@@ -1,0 +1,116 @@
+:root {
+    --vu-black: #1C1C1C;
+    --vu-gold: #CFAE70;
+    --vu-light-gold: #FEEEB6;
+    --vu-dark-gold: #B49248;
+}
+
+body {
+    margin: 0;
+    padding: 0 2rem;
+    background: #1C1C1C;
+    color: white;
+}
+
+#root {
+    height: 100%;
+    font-family: sans-serif;
+}
+
+input, select {
+    border: 2px solid white;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+input:hover, select:hover {
+    box-shadow: var(--vu-dark-gold) 0px 0px 8px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--vu-gold);
+    box-shadow: var(--vu-dark-gold) 0px 0px 8px;
+}
+
+.brand {
+    color: var(--vu-gold);
+}
+
+.slogan {
+    font-style: italic;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-block: 1rem;
+}
+
+#search-button {
+    margin-inline: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--vu-gold);
+    color: var(--vu-black);
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#search-button:hover {
+    cursor: pointer;
+    background: var(--vu-light-gold);
+}
+
+#search-button:active {
+    background: var(--vu-dark-gold);
+}
+
+.filters-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-block: 1rem;
+}
+
+.filter {
+    font-weight: bold;
+    margin-inline: 0.5rem;
+}
+
+.filters-container input, select {
+    margin-inline: 0.25rem;
+}
+
+#min-price, #max-price {
+    width: 6rem;
+}
+
+#num-beds, #num-baths {
+    width: 3.5rem;
+}
+
+.apartment-listing {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background: #111;
+    margin-block: 1rem;
+    padding: 0.5rem 1.5rem;
+    border-radius: 10px;
+}
+
+.listing-price-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.listing-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--vu-gold);
+    margin-inline: 0.5rem;
+}
