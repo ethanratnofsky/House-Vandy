@@ -5,6 +5,8 @@ const url = require('url');
 const querystring = require('querystring');
 //const Article = require('./models').Article;
 
+const scraper_controller = require("../controllers/scraperController");
+
 // middleware that is specific to this router
 router.use((req, res, next) => {
   console.log('Time: ', Date.now())
@@ -17,11 +19,9 @@ router.get('/', (req, res) => {
 })
 
 // define the about route
-router.get('/runScraper', (req, res) => {
-  //Here we will use a switch statement to determine which scraper to run
-      // Access the provided 'apartmentName' query parameters
-      let apartmentName = req.query.apartmentName;
-  res.send(apartmentName + ' scraper is running')
-})
+router.get('/runScraper', scraper_controller.scrape)
+
+// define the about route
+router.get('/getApartments', scraper_controller.getApartments)
 
 module.exports = router
