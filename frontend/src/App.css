@@ -33,8 +33,22 @@ input:focus, select:focus {
     box-shadow: var(--vu-dark-gold) 0px 0px 8px;
 }
 
+.brand-container {
+    display: flex;
+    align-items: center;
+    margin-block: 1rem;
+}
+
+#logo {
+    width: 80px;
+    margin-inline: 1rem;
+}
+
 .brand {
     color: var(--vu-gold);
+    font-family: "Impact", sans-serif;
+    display: inline;
+    text-decoration: underline;
 }
 
 .slogan {
@@ -90,6 +104,11 @@ input[type="number"] {
 
 #num-beds, #num-baths {
     width: 3.5rem;
+}
+
+.no-apts-found {
+    margin-block: 4rem;
+    text-align: center;
 }
 
 .apartment-listing {

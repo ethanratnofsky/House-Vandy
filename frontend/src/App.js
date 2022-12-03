@@ -80,15 +80,21 @@ const App = () => {
     };
 
     const handleSubmit = (event) => {
-        setDisplayedApartments(allApartments.filter((apartment) => (
-            (apartmentsFilter.length === 0 || apartmentsFilter.some((option) => option.value === apartment.apartmentName)) &&
-            (!minPriceFilter || apartment.startingPrice >= minPriceFilter) &&
-            (!maxPriceFilter || apartment.startingPrice <= maxPriceFilter) &&
-            (!minSqftFilter || apartment.squareFeet >= minSqftFilter) &&
-            (!maxSqftFilter || apartment.squareFeet <= maxSqftFilter) &&
-            (!bedsFilter || apartment.numBeds === bedsFilter) &&
-            (!bathsFilter || apartment.numBaths === bathsFilter)
-        )));
+        setDisplayedApartments(
+            allApartments.filter(
+                (apartment) =>
+                    (apartmentsFilter.length === 0 ||
+                        apartmentsFilter.some(
+                            (option) => option.value === apartment.apartmentName
+                        )) &&
+                    (!minPriceFilter || apartment.startingPrice >= minPriceFilter) &&
+                    (!maxPriceFilter || apartment.startingPrice <= maxPriceFilter) &&
+                    (!minSqftFilter || apartment.squareFeet >= minSqftFilter) &&
+                    (!maxSqftFilter || apartment.squareFeet <= maxSqftFilter) &&
+                    (!bedsFilter || apartment.numBeds === bedsFilter) &&
+                    (!bathsFilter || apartment.numBaths === bathsFilter)
+            )
+        );
         event.preventDefault();
     };
 
@@ -111,13 +117,22 @@ const App = () => {
 
     // Determine the unique apartment names
     useEffect(() => {
-        setApartmentNames([...new Set(allApartments.map((apartment) => apartment.apartmentName))].sort());
+        setApartmentNames(
+            [...new Set(allApartments.map((apartment) => apartment.apartmentName))].sort()
+        );
         setDisplayedApartments(allApartments);
     }, [allApartments]);
 
     return (
         <div className="container">
-            <h1 className="brand">House Vandy</h1>
+            <div className="brand-container">
+                <img
+                    id="logo"
+                    src={require("./assets/house-vandy-logo.png").default}
+                    alt="House Vandy"
+                />
+                <h1 className="brand">House Vandy</h1>
+            </div>
             <p className="slogan">Built for Vandy students by Vandy students!</p>
             <form onSubmit={handleSubmit}>
                 <div className="search-container">
@@ -225,43 +240,48 @@ const App = () => {
                 </div>
             </form>
             <div className="apartments-list">
-                {apartmentNames.map((apartmentName, index) => {
-                    const apartments = displayedApartments.filter(
-                        (apartment) => apartment.apartmentName === apartmentName
-                    );
+                {allApartments.length === 0 ? (
+                    <h2 className="no-apts-found">No Apartments Found</h2>
+                ) : (
+                    apartmentNames.map((apartmentName, index) => {
+                        const apartments = displayedApartments.filter(
+                            (apartment) => apartment.apartmentName === apartmentName
+                        );
 
-                    return (
-                        <div className="apartment-list" key={index}>
-                            <div className="apartment-header">
-                                <h2>
-                                    {apartmentName} ({apartments.length})
-                                </h2>
-                                <hr />
-                            </div>
-                            <div className="apartment-listings">
-                                {apartments.map((listing, listingIndex) => {
-                                    return (
-                                        <div className="apartment-listing" key={listingIndex}>
-                                            <div className="listing-details">
-                                                <h4>
-                                                    {listing.numBeds} Bed, {listing.numBaths} Bath
-                                                </h4>
-                                                <p>{listing.squareFeet} square-feet</p>
+                        return (
+                            <div className="apartment-list" key={index}>
+                                <div className="apartment-header">
+                                    <h2>
+                                        {apartmentName} ({apartments.length})
+                                    </h2>
+                                    <hr />
+                                </div>
+                                <div className="apartment-listings">
+                                    {apartments.map((listing, listingIndex) => {
+                                        return (
+                                            <div className="apartment-listing" key={listingIndex}>
+                                                <div className="listing-details">
+                                                    <h4>
+                                                        {listing.numBeds} Bed, {listing.numBaths}{" "}
+                                                        Bath
+                                                    </h4>
+                                                    <p>{listing.squareFeet} square-feet</p>
+                                                </div>
+                                                <div className="listing-price-container">
+                                                    Starting at
+                                                    <p className="listing-price">
+                                                        ${listing.startingPrice.toLocaleString()}
+                                                    </p>
+                                                    / month
+                                                </div>
                                             </div>
-                                            <div className="listing-price-container">
-                                                Starting at
-                                                <p className="listing-price">
-                                                    ${listing.startingPrice.toLocaleString()}
-                                                </p>
-                                                / month
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
+                                </div>
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })
+                )}
             </div>
             <div className="footer">
                 <p>Vanderbilt University, CS-4287 Fall 2022</p>
