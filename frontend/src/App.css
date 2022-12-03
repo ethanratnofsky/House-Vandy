@@ -114,3 +114,18 @@ input[type="number"] {
     color: var(--vu-gold);
     margin-inline: 0.5rem;
 }
+
+.footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem;
+    font-style: italic;
+    font-size: 0.8rem;
+}
+
+.footer a {
+    color: var(--vu-gold);
+    font-style: normal;
+}

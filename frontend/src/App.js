@@ -263,6 +263,11 @@ const App = () => {
                     );
                 })}
             </div>
+            <div className="footer">
+                <p>Vanderbilt University, CS-4287 Fall 2022</p>
+                <a href="https://github.com/ethanratnofsky/House-Vandy">GitHub</a>
+                <p>Ethan Ratnofsky, Ethan Han, Sneh Patel</p>
+            </div>
         </div>
     );
 };
