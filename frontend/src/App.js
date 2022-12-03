@@ -8,7 +8,7 @@ import "./App.css";
 // Demo data
 import APARTMENTS from "../demoApartmentData";
 
-const USE_DEMO_DATA = false;
+const USE_DEMO_DATA = true;
 
 const selectStyles = {
     container: (provided) => ({
@@ -47,6 +47,8 @@ const App = () => {
     const [maxPriceFilter, setMaxPriceFilter] = useState();
     const [bedsFilter, setBedsFilter] = useState();
     const [bathsFilter, setBathsFilter] = useState();
+    const [minSqftFilter, setMinSqftFilter] = useState(0);
+    const [maxSqftFilter, setMaxSqftFilter] = useState();
     const [displayedApartments, setDisplayedApartments] = useState([]);
 
     const handleApartmentsInputChange = (selectedOptions) => {
@@ -69,11 +71,21 @@ const App = () => {
         setBathsFilter(parseInt(event.target.value));
     };
 
+    const handleMinSqftInputChange = (event) => {
+        setMinSqftFilter(parseInt(event.target.value));
+    };
+
+    const handleMaxSqftInputChange = (event) => {
+        setMaxSqftFilter(parseInt(event.target.value));
+    };
+
     const handleSubmit = (event) => {
         setDisplayedApartments(allApartments.filter((apartment) => (
             (apartmentsFilter.length === 0 || apartmentsFilter.some((option) => option.value === apartment.apartmentName)) &&
             (!minPriceFilter || apartment.startingPrice >= minPriceFilter) &&
             (!maxPriceFilter || apartment.startingPrice <= maxPriceFilter) &&
+            (!minSqftFilter || apartment.squareFeet >= minSqftFilter) &&
+            (!maxSqftFilter || apartment.squareFeet <= maxSqftFilter) &&
             (!bedsFilter || apartment.numBeds === bedsFilter) &&
             (!bathsFilter || apartment.numBaths === bathsFilter)
         )));
@@ -90,6 +102,9 @@ const App = () => {
                 .then((data) => {
                     console.log(data);
                     setAllApartments(data);
+                })
+                .catch((error) => {
+                    console.log(error);
                 });
         }
     }, []);
@@ -120,7 +135,7 @@ const App = () => {
                 </div>
                 <div className="filters-container">
                     <label className="filter">
-                        Min Price $
+                        Min. Price $
                         <input
                             type="number"
                             name="min-price"
@@ -132,7 +147,7 @@ const App = () => {
                         />
                     </label>
                     <label className="filter">
-                        Max Price $
+                        Max. Price $
                         <input
                             type="number"
                             name="max-price"
@@ -142,6 +157,32 @@ const App = () => {
                             onChange={handleMaxPriceInputChange}
                             min={0}
                         />
+                    </label>
+                    <label className="filter">
+                        Min. Size
+                        <input
+                            type="number"
+                            name="min-size"
+                            id="min-size"
+                            placeholder="Min. Size"
+                            value={minSqftFilter}
+                            onChange={handleMinSqftInputChange}
+                            min={0}
+                        />
+                        sq. ft.
+                    </label>
+                    <label className="filter">
+                        Max. Size
+                        <input
+                            type="number"
+                            name="max-size"
+                            id="max-size"
+                            placeholder="Max. Size"
+                            value={maxSqftFilter}
+                            onChange={handleMaxSqftInputChange}
+                            min={0}
+                        />
+                        sq. ft.
                     </label>
                     <label className="filter">
                         Beds

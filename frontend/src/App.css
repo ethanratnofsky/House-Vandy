@@ -84,7 +84,7 @@ input:focus, select:focus {
     margin-inline: 0.25rem;
 }
 
-#min-price, #max-price {
+input[type="number"] {
     width: 6rem;
 }
 
