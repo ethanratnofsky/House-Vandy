@@ -5,8 +5,10 @@ import Select from "react-select";
 // Styles
 import "./App.css";
 
-// TODO: TEMP DEMO DATA
+// Demo data
 import APARTMENTS from "../demoApartmentData";
+
+const USE_DEMO_DATA = false;
 
 const selectStyles = {
     container: (provided) => ({
@@ -40,7 +42,7 @@ const selectStyles = {
 const App = () => {
     const [allApartments, setAllApartments] = useState([]);
     const [apartmentNames, setApartmentNames] = useState([]);
-    const [apartmentsFilter, setApartmentsFilter] = useState([]); // array of { value: aptName, label: aptName }
+    const [apartmentsFilter, setApartmentsFilter] = useState([]); // array of { value: apartmentName, label: apartmentName }
     const [minPriceFilter, setMinPriceFilter] = useState(0);
     const [maxPriceFilter, setMaxPriceFilter] = useState();
     const [bedsFilter, setBedsFilter] = useState();
@@ -69,7 +71,7 @@ const App = () => {
 
     const handleSubmit = (event) => {
         setDisplayedApartments(allApartments.filter((apartment) => (
-            (apartmentsFilter.length === 0 || apartmentsFilter.some((option) => option.value === apartment.aptName)) &&
+            (apartmentsFilter.length === 0 || apartmentsFilter.some((option) => option.value === apartment.apartmentName)) &&
             (!minPriceFilter || apartment.startingPrice >= minPriceFilter) &&
             (!maxPriceFilter || apartment.startingPrice <= maxPriceFilter) &&
             (!bedsFilter || apartment.numBeds === bedsFilter) &&
@@ -80,12 +82,21 @@ const App = () => {
 
     // On component mount, fetch apartment data from backend
     useEffect(() => {
-        setAllApartments(APARTMENTS); // TODO: get apartments from backend
+        if (USE_DEMO_DATA) {
+            setAllApartments(APARTMENTS);
+        } else {
+            fetch("http://localhost:3000/scraper/getApartments")
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    setAllApartments(data);
+                });
+        }
     }, []);
 
     // Determine the unique apartment names
     useEffect(() => {
-        setApartmentNames([...new Set(allApartments.map((apartment) => apartment.aptName))].sort());
+        setApartmentNames([...new Set(allApartments.map((apartment) => apartment.apartmentName))].sort());
         setDisplayedApartments(allApartments);
     }, [allApartments]);
 
@@ -175,7 +186,7 @@ const App = () => {
             <div className="apartments-list">
                 {apartmentNames.map((apartmentName, index) => {
                     const apartments = displayedApartments.filter(
-                        (apartment) => apartment.aptName === apartmentName
+                        (apartment) => apartment.apartmentName === apartmentName
                     );
 
                     return (
