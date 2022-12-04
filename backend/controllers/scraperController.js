@@ -47,6 +47,11 @@ async function runScraping(apartmentName) {
   switch (apartmentName) {
     case 'Artemis':
       await mongoose.connect('mongodb+srv://sneh:oQ9sfXWUdfrItMdv@researchproject.hisvha9.mongodb.net/cloud?retryWrites=true&w=majority');
+      Apartment.deleteMany({ apartmentName : "Artemis Midtown" }).then(function(){
+          console.log("Data deleted"); // Success
+      }).catch(function(error){
+          console.log(error); // Failure
+      });
       apartments = await artemisScraper();      
       apartments.forEach(async (apartment) => { 
         await Apartment.create(apartment);
@@ -57,6 +62,11 @@ async function runScraping(apartmentName) {
       return;
     case 'Elliston':
       await mongoose.connect('mongodb+srv://sneh:oQ9sfXWUdfrItMdv@researchproject.hisvha9.mongodb.net/cloud?retryWrites=true&w=majority');
+      Apartment.deleteMany({ apartmentName : "Elliston 23" }).then(function(){
+          console.log("Data deleted"); // Success
+      }).catch(function(error){
+          console.log(error); // Failure
+      });
       apartments = await ellistonScraper();      
       apartments.forEach(async (apartment) => { 
         console.log(await Apartment.create(apartment));
@@ -83,6 +93,8 @@ async function artemisScraper() {
   
   apartmentsListings.each(function () {
     const apartment = $(this);
+    let apartmentLink = apartment.find('h4').find('a').attr('href');
+
     let apartmentPrice = apartment.find('div.fp-col.rent').find('div.fp-col-text').text();
     let apartmentBedrooms = apartment.find('div.fp-col.bed-bath').find('span.fp-col-text').text();
     let apartmentBathrooms = parseInt(apartmentBedrooms.substring(2).replace(/[^0-9.]/g, ''));
@@ -101,7 +113,8 @@ async function artemisScraper() {
       'numBeds': apartmentBedrooms,
       'numBaths': apartmentBathrooms,
       'squareFeet': apartmentSquareFeet,
-      'apartmentName': 'Artemis'
+      'apartmentName': 'Artemis Midtown',
+      'url': apartmentLink
     });
   });
   return apartment_info;
@@ -163,6 +176,11 @@ async function ellistonScraper() {
       return;
     }
     apartmentPrice = parseInt(apartmentPrice);
+    let apartmentLink = apartment.find('h2.card-title.h4.font-weight-bold.text-capitalize').text();
+    apartmentLink = apartmentLink.replace(/\s/g, '');
+    apartmentLink = apartmentLink.toLowerCase();
+    apartmentLink = "https://www.elliston23apts.com/floorplans/" + apartmentLink;
+
     let apartmentBedrooms = apartment.find('div.card.text-center.h-100').find('div.card-header.bg-transparent.border-bottom-0.pt-4.pb-0').find('ul').find('li.list-inline-item.mr-2').first().text();
     let apartmentBathrooms = apartment.find('div.card.text-center.h-100').find('div.card-header.bg-transparent.border-bottom-0.pt-4.pb-0').find('ul').find('li.list-inline-item.mr-2:nth-child(2)').text();
     apartmentBathrooms = parseInt(apartmentBathrooms.replace(/[^0-9.]/g, ''));
@@ -186,7 +204,8 @@ async function ellistonScraper() {
       'numBeds': apartmentBedrooms,
       'numBaths': apartmentBathrooms,
       'squareFeet': apartmentSquareFeet,
-      'apartmentName': 'Elliston'
+      'apartmentName': 'Elliston 23',
+      'url': apartmentLink
     });
   });
   return apartment_info;

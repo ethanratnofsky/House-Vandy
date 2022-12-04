@@ -24,6 +24,10 @@ const apartmentSchema = new Schema({
   apartmentName: {
     type: String,
     required: true
+  },
+  url: {
+    type: String,
+    required: true
   }
 });
 
