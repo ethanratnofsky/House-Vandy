@@ -4,7 +4,10 @@ const cheerios = require('cheerio');
 const axios = require('axios');
 const request = require('request');
 const mongoose = require('mongoose');
+const { get } = require('request');
 const Apartment = mongoose.model('Apartment')
+const puppeteer = require('puppeteer');
+
 
 
 // Scrape data from one of our six sites
@@ -72,9 +75,18 @@ async function runScraping(apartmentName) {
         console.log(await Apartment.create(apartment));
       });
       return apartments
-    case 'ParkCentral':
-      await parkCentralScraper();
-      break;
+    case 'Acklen':
+      await mongoose.connect('mongodb+srv://sneh:oQ9sfXWUdfrItMdv@researchproject.hisvha9.mongodb.net/cloud?retryWrites=true&w=majority');
+      Apartment.deleteMany({ apartmentName : "Acklen West End" }).then(function(){
+          console.log("Data deleted"); // Success
+      }).catch(function(error){
+          console.log(error); // Failure
+      });
+      apartments = await acklenScraper();      
+      apartments.forEach(async (apartment) => { 
+        console.log(await Apartment.create(apartment));
+      });
+      return apartments
     default:
       console.log("Invalid apartment name");
   }
@@ -120,40 +132,48 @@ async function artemisScraper() {
   return apartment_info;
 };
 
-async function apolloScraper() {
-  // Get the HTML from the Apollo website 
-  const response = await axios.get('https://www.apollomidtown.com/models', {headers: {'Accept-Encoding': 'application/json'}});
+async function acklenScraper() {
+  // Get the HTML from the Artemis website 
+  const $ = cheerios.load(await getPage('https://www.maac.com/available-apartments/?propertyId=662122&Bedroom=undefined%20Bed'));
 
-  const $ = cheerios.load(response.data);
+  const apartmentsListings = $(".apartment.apartment--no-layout.loaded");
 
-  const apartmentsListings = $(".wrap-model-item.model-list.item");
-  console.log(apartmentsListings);
-  return;
   let apartment_info = [];
   
   apartmentsListings.each(function () {
     const apartment = $(this);
-    let apartmentPrice = apartment.find('div.model-unit-info').find('div.rent.model-info-row').text();
-    console.log(apartmentPrice);
-    // let apartmentBedrooms = apartment.find('div.fp-col.bed-bath').find('span.fp-col-text').text();
-    // let apartmentBathrooms = parseInt(apartmentBedrooms.substring(2).replace(/[^0-9.]/g, ''));
-    // let apartmentSquareFeet = apartment.find('div.fp-col.sq-feet').find('span.fp-col-text').text();
-    // apartmentSquareFeet = parseInt(apartmentSquareFeet.replace(/[^0-9.]/g, ''));
-    // apartmentBedrooms = apartmentBedrooms.replace(/[^0-9.]/g, '');
-    // if (apartmentBedrooms == '') {
-    //   apartmentBedrooms = 1;
-    // }
+    apartmentPrice = apartment.find('div.apartment__price').text();
+    apartmentPrice = apartmentPrice.replace(/[^0-9]/g, '');
+    if (apartmentPrice == '') {
+      return;
+    }
+    apartmentPrice = parseInt(apartmentPrice);
+    
+    let apartmentLink = apartment.find('div.apartment__ctas').find('div.apartment__ctas-content').find('div.apartment__applyFix').find('a').attr('href');
 
-    // apartmentBedrooms = parseInt(apartmentBedrooms.substring(0, 1).replace(/[^0-9.]/g, ''));
-    // apartmentPrice = parseInt(apartmentPrice.replace(/[^0-9]/g, ''));
+    let apartmentBedrooms = apartment.find('div.p1.apartment__unit-description-text').first().text();
+    let apartmentBathrooms = apartment.find('div.p1.apartment__unit-description-text:nth-child(2)').text();
+    apartmentBathrooms = parseInt(apartmentBathrooms.replace(/[^0-9.]/g, ''));
 
-    // apartment_info.push({
-    //   'startingPrice': apartmentPrice,
-    //   'numBeds': apartmentBedrooms,
-    //   'numBaths': apartmentBathrooms,
-    //   'squareFeet': apartmentSquareFeet,
-    //   'apartmentName': 'Artemis'
-    // });
+    let apartmentSquareFeet = apartment.find('div.p1.apartment__unit-description-text:nth-child(3)').text();
+    apartmentSquareFeet = apartmentSquareFeet.replace(/[^0-9.]/g, '')
+
+    apartmentSquareFeet = parseInt(apartmentSquareFeet);
+
+    apartmentBedrooms = apartmentBedrooms.replace(/[^0-9.]/g, '');
+    if (apartmentBedrooms == '') {
+      apartmentBedrooms = 1;
+    }
+    apartmentBedrooms = parseInt(apartmentBedrooms);
+
+    apartment_info.push({
+      'startingPrice': apartmentPrice,
+      'numBeds': apartmentBedrooms,
+      'numBaths': apartmentBathrooms,
+      'squareFeet': apartmentSquareFeet,
+      'apartmentName': 'Acklen West End',
+      'url': apartmentLink
+    });
   });
   return apartment_info;
 };
@@ -211,11 +231,12 @@ async function ellistonScraper() {
   return apartment_info;
 };
 
-async function getHTML(url) {
-  request({
-    url: url,
-    gzip: true,
-}, (error, response, body) => {
-    console.log('error:', error); // Print the error if one occurred
-    return body
-})};
+async function getPage(url) {
+  const browser = await puppeteer.launch({headless: true});
+  const page = await browser.newPage();
+  await page.goto(url, {waitUntil: 'networkidle0'});
+
+  const html = await page.content(); // serialized HTML of page DOM.
+  await browser.close();
+  return html;
+}
