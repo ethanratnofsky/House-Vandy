@@ -23,11 +23,11 @@ input, select {
     font-size: 14px;
 }
 
-input:hover, select:hover {
+input:hover, select:hover, .apartment-listing:hover, .footer a:hover {
     box-shadow: var(--vu-dark-gold) 0px 0px 8px;
 }
 
-input:focus, select:focus {
+input:not(#react-select-2-input):focus, select:focus {
     outline: none;
     border-color: var(--vu-gold);
     box-shadow: var(--vu-dark-gold) 0px 0px 8px;
@@ -87,9 +87,10 @@ input:focus, select:focus {
     flex-direction: row;
     width: 100%;
     margin-block: 1rem;
+    justify-content: space-between;
 }
 
-.filter {
+.filter, .sort {
     font-weight: bold;
     margin-inline: 0.5rem;
 }
@@ -119,6 +120,16 @@ input[type="number"] {
     margin-block: 1rem;
     padding: 0.5rem 1.5rem;
     border-radius: 10px;
+    text-decoration: none;
+    color: white;
+}
+
+.listing-name {
+    color: var(--vu-gold);
+    border: 2px solid var(--vu-gold);
+    border-radius: 5px;
+    padding: 0.25rem 0.5rem;
+    width: fit-content;
 }
 
 .listing-price-container {
@@ -147,4 +158,8 @@ input[type="number"] {
 .footer a {
     color: var(--vu-gold);
     font-style: normal;
+    border: 2px solid var(--vu-gold);
+    border-radius: 5px;
+    padding: 0.25rem 0.5rem;
+    text-decoration: none;
 }

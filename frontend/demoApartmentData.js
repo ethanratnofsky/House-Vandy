@@ -5,6 +5,7 @@ const APARTMENTS = [
         numBeds: 2,
         numBaths: 2,
         startingPrice: 2000,
+        url: "https://www.aertsonmidtown.com/",
     },
     {
         apartmentName: "Aertson Midtown",
@@ -12,6 +13,7 @@ const APARTMENTS = [
         numBeds: 1,
         numBaths: 1,
         startingPrice: 1725,
+        url: "https://www.aertsonmidtown.com/",
     },
     {
         apartmentName: "Aertson Midtown",
@@ -19,6 +21,7 @@ const APARTMENTS = [
         numBeds: 1,
         numBaths: 1,
         startingPrice: 2091,
+        url: "https://www.aertsonmidtown.com/",
     },
     {
         apartmentName: "Kenect",
@@ -26,6 +29,7 @@ const APARTMENTS = [
         numBeds: 3,
         numBaths: 3,
         startingPrice: 1468,
+        url: "https://www.kenectnashville.com/",
     },
     {
         apartmentName: "Kenect",
@@ -33,6 +37,7 @@ const APARTMENTS = [
         numBeds: 1,
         numBaths: 1,
         startingPrice: 2500,
+        url: "https://www.kenectnashville.com/",
     },
     {
         apartmentName: "Kenect",
@@ -40,6 +45,7 @@ const APARTMENTS = [
         numBeds: 0,
         numBaths: 1,
         startingPrice: 1822,
+        url: "https://www.kenectnashville.com/",
     },
     {
         apartmentName: "Artemis Midtown",
@@ -47,6 +53,7 @@ const APARTMENTS = [
         numBeds: 1,
         numBaths: 1,
         startingPrice: 1399,
+        url: "https://www.artemismidtown.com/",
     },
     {
         apartmentName: "Artemis Midtown",
@@ -54,6 +61,7 @@ const APARTMENTS = [
         numBeds: 2,
         numBaths: 2,
         startingPrice: 2500,
+        url: "https://www.artemismidtown.com/",
     },
     {
         apartmentName: "Artemis Midtown",
@@ -61,6 +69,7 @@ const APARTMENTS = [
         numBeds: 0,
         numBaths: 1,
         startingPrice: 1300,
+        url: "https://www.artemismidtown.com/",
     },
     {
         apartmentName: "Apollo Midtown",
@@ -68,6 +77,7 @@ const APARTMENTS = [
         numBeds: 1,
         numBaths: 1,
         startingPrice: 1695,
+        url: "https://www.apollomidtown.com/",
     },
     {
         apartmentName: "Apollo Midtown",
@@ -75,6 +85,7 @@ const APARTMENTS = [
         numBeds: 2,
         numBaths: 2,
         startingPrice: 2588,
+        url: "https://www.apollomidtown.com/",
     },
     {
         apartmentName: "Apollo Midtown",
@@ -82,6 +93,7 @@ const APARTMENTS = [
         numBeds: 2,
         numBaths: 2,
         startingPrice: 2740,
+        url: "https://www.apollomidtown.com/",
     },
     {
         apartmentName: "Elliston 23",
@@ -89,6 +101,7 @@ const APARTMENTS = [
         numBeds: 1,
         numBaths: 1,
         startingPrice: 1800,
+        url: "https://www.elliston23apts.com/",
     },
     {
         apartmentName: "Elliston 23",
@@ -96,6 +109,7 @@ const APARTMENTS = [
         numBeds: 2,
         numBaths: 2,
         startingPrice: 2600,
+        url: "https://www.elliston23apts.com/",
     },
     {
         apartmentName: "Elliston 23",
@@ -103,6 +117,7 @@ const APARTMENTS = [
         numBeds: 2,
         numBaths: 2,
         startingPrice: 2700,
+        url: "https://www.elliston23apts.com/",
     },
     {
         apartmentName: "Acklen West End",
@@ -110,6 +125,7 @@ const APARTMENTS = [
         numBeds: 1,
         numBaths: 1,
         startingPrice: 1703,
+        url: "https://www.acklenwestend.com/",
     },
     {
         apartmentName: "Acklen West End",
@@ -117,6 +133,7 @@ const APARTMENTS = [
         numBeds: 2,
         numBaths: 2,
         startingPrice: 2448,
+        url: "https://www.acklenwestend.com/",
     },
     {
         apartmentName: "Acklen West End",
@@ -124,6 +141,7 @@ const APARTMENTS = [
         numBeds: 2,
         numBaths: 2,
         startingPrice: 2458,
+        url: "https://www.acklenwestend.com/",
     }
 ];
 

@@ -42,6 +42,7 @@ const selectStyles = {
 const App = () => {
     const [allApartments, setAllApartments] = useState([]);
     const [apartmentNames, setApartmentNames] = useState([]);
+    const [displayedApartments, setDisplayedApartments] = useState([]);
     const [apartmentsFilter, setApartmentsFilter] = useState([]); // array of { value: apartmentName, label: apartmentName }
     const [minPriceFilter, setMinPriceFilter] = useState(0);
     const [maxPriceFilter, setMaxPriceFilter] = useState();
@@ -49,7 +50,7 @@ const App = () => {
     const [bathsFilter, setBathsFilter] = useState();
     const [minSqftFilter, setMinSqftFilter] = useState(0);
     const [maxSqftFilter, setMaxSqftFilter] = useState();
-    const [displayedApartments, setDisplayedApartments] = useState([]);
+    const [sortFilter, setSortFilter] = useState("priceAscending");
 
     const handleApartmentsInputChange = (selectedOptions) => {
         setApartmentsFilter(selectedOptions);
@@ -79,29 +80,55 @@ const App = () => {
         setMaxSqftFilter(parseInt(event.target.value));
     };
 
+    const handleSortInputChange = (event) => {
+        setSortFilter(event.target.value);
+    };
+
+    const sortApartments = (apartments) =>
+        apartments.sort((a, b) => {
+            switch (sortFilter) {
+                case "priceAscending":
+                    return a.startingPrice - b.startingPrice;
+                case "priceDescending":
+                    return b.startingPrice - a.startingPrice;
+                case "sizeAscending":
+                    return a.squareFeet - b.squareFeet;
+                case "sizeDescending":
+                    return b.squareFeet - a.squareFeet;
+                // case "nameAscending":
+                //     return a.apartmentName.localeCompare(b.apartmentName);
+                case "nameDescending":
+                    return b.apartmentName.localeCompare(a.apartmentName);
+                default:
+                    return a.apartmentName.localeCompare(b.apartmentName);
+            }
+        });
+
     const handleSubmit = (event) => {
+        event.preventDefault();
         setDisplayedApartments(
-            allApartments.filter(
-                (apartment) =>
-                    (apartmentsFilter.length === 0 ||
-                        apartmentsFilter.some(
-                            (option) => option.value === apartment.apartmentName
-                        )) &&
-                    (!minPriceFilter || apartment.startingPrice >= minPriceFilter) &&
-                    (!maxPriceFilter || apartment.startingPrice <= maxPriceFilter) &&
-                    (!minSqftFilter || apartment.squareFeet >= minSqftFilter) &&
-                    (!maxSqftFilter || apartment.squareFeet <= maxSqftFilter) &&
-                    (!bedsFilter || apartment.numBeds === bedsFilter) &&
-                    (!bathsFilter || apartment.numBaths === bathsFilter)
+            sortApartments(
+                allApartments.filter(
+                    (apartment) =>
+                        (apartmentsFilter.length === 0 ||
+                            apartmentsFilter.some(
+                                (option) => option.value === apartment.apartmentName
+                            )) &&
+                        (!minPriceFilter || apartment.startingPrice >= minPriceFilter) &&
+                        (!maxPriceFilter || apartment.startingPrice <= maxPriceFilter) &&
+                        (!minSqftFilter || apartment.squareFeet >= minSqftFilter) &&
+                        (!maxSqftFilter || apartment.squareFeet <= maxSqftFilter) &&
+                        (!bedsFilter || apartment.numBeds === bedsFilter) &&
+                        (!bathsFilter || apartment.numBaths === bathsFilter)
+                )
             )
         );
-        event.preventDefault();
     };
 
     // On component mount, fetch apartment data from backend
     useEffect(() => {
         if (USE_DEMO_DATA) {
-            setAllApartments(APARTMENTS);
+            setAllApartments(sortApartments(APARTMENTS));
         } else {
             fetch("http://localhost:3000/scraper/getApartments")
                 .then((response) => response.json())
@@ -237,48 +264,49 @@ const App = () => {
                             })}
                         </select>
                     </label>
+                    <label className="sort">
+                        Sort by
+                        <select name="sort" value={sortFilter} onChange={handleSortInputChange}>
+                            <option value="priceAscending">Price (ascending)</option>
+                            <option value="priceDescending">Price (descending)</option>
+                            <option value="sizeAscending">Size (ascending)</option>
+                            <option value="sizeDescending">Size (descending)</option>
+                            <option value="nameAscending">Name (ascending)</option>
+                            <option value="nameDescending">Name (descending)</option>
+                        </select>
+                    </label>
                 </div>
             </form>
-            <div className="apartments-list">
-                {allApartments.length === 0 ? (
+            <div className="results-list">
+                <h2>Results ({displayedApartments.length})</h2>
+                <hr />
+                {displayedApartments.length === 0 ? (
                     <h2 className="no-apts-found">No Apartments Found</h2>
                 ) : (
-                    apartmentNames.map((apartmentName, index) => {
-                        const apartments = displayedApartments.filter(
-                            (apartment) => apartment.apartmentName === apartmentName
-                        );
-
+                    displayedApartments.map((listing, listingIndex) => {
                         return (
-                            <div className="apartment-list" key={index}>
-                                <div className="apartment-header">
-                                    <h2>
-                                        {apartmentName} ({apartments.length})
-                                    </h2>
-                                    <hr />
+                            <a
+                                className="apartment-listing"
+                                key={listingIndex}
+                                href={listing.url}
+                                target="blank"
+                                referrerPolicy="no-referrer"
+                            >
+                                <div className="listing-details">
+                                    <h3 className="listing-name">{listing.apartmentName}</h3>
+                                    <p>
+                                        {listing.numBeds} Bed, {listing.numBaths} Bath
+                                    </p>
+                                    <p>{listing.squareFeet.toLocaleString()} square-feet</p>
                                 </div>
-                                <div className="apartment-listings">
-                                    {apartments.map((listing, listingIndex) => {
-                                        return (
-                                            <div className="apartment-listing" key={listingIndex}>
-                                                <div className="listing-details">
-                                                    <h4>
-                                                        {listing.numBeds} Bed, {listing.numBaths}{" "}
-                                                        Bath
-                                                    </h4>
-                                                    <p>{listing.squareFeet} square-feet</p>
-                                                </div>
-                                                <div className="listing-price-container">
-                                                    Starting at
-                                                    <p className="listing-price">
-                                                        ${listing.startingPrice.toLocaleString()}
-                                                    </p>
-                                                    / month
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
+                                <div className="listing-price-container">
+                                    Starting at
+                                    <p className="listing-price">
+                                        ${listing.startingPrice.toLocaleString()}
+                                    </p>
+                                    / month
                                 </div>
-                            </div>
+                            </a>
                         );
                     })
                 )}
