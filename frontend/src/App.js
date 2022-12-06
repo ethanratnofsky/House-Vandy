@@ -8,7 +8,7 @@ import "./App.css";
 // Demo data
 import APARTMENTS from "../demoApartmentData";
 
-const USE_DEMO_DATA = true;
+const USE_DEMO_DATA = false;
 
 const selectStyles = {
     container: (provided) => ({
@@ -134,7 +134,7 @@ const App = () => {
                 .then((response) => response.json())
                 .then((data) => {
                     console.log(data);
-                    setAllApartments(data);
+                    setAllApartments(sortApartments(data));
                 })
                 .catch((error) => {
                     console.log(error);
