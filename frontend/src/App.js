@@ -128,15 +128,19 @@ const App = () => {
     // On component mount, fetch apartment data from backend
     useEffect(() => {
         if (USE_DEMO_DATA) {
+            console.log("Using demo data...");
             setAllApartments(sortApartments(APARTMENTS));
         } else {
+            console.log("Fetching apartment data from database...");
             fetch("http://localhost:3000/scraper/getApartments")
                 .then((response) => response.json())
                 .then((data) => {
+                    console.log("Successfully fetched apartment data from database: ");
                     console.log(data);
                     setAllApartments(sortApartments(data));
                 })
                 .catch((error) => {
+                    console.log("Error fetching apartment data from database: ");
                     console.log(error);
                 });
         }
