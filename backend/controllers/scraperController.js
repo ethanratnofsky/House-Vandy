@@ -34,6 +34,7 @@ exports.getApartments = (req, res) => {
                         numBaths: apartment.numBaths,
                         numBeds: apartment.numBeds,
                         startingPrice: apartment.startingPrice,
+                        url: apartment.url,
                     });
                 });
                 console.log("Got apartments!");
