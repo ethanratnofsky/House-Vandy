@@ -38,6 +38,7 @@ exports.getApartments = (req, res) => {
                     });
                 });
                 console.log("Got apartments!");
+                console.log(apartmentsToReturn);
                 res.send(apartmentsToReturn);
             });
         })
