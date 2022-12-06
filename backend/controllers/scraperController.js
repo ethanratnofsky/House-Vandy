@@ -19,6 +19,7 @@ exports.scrape = (req, res) => {
 
 // Get data to send to front end
 exports.getApartments = (req, res) => {
+    console.log("Getting apartments...");
     mongoose
         .connect(
             "mongodb+srv://sneh:oQ9sfXWUdfrItMdv@researchproject.hisvha9.mongodb.net/cloud?retryWrites=true&w=majority"
@@ -35,6 +36,7 @@ exports.getApartments = (req, res) => {
                         startingPrice: apartment.startingPrice,
                     });
                 });
+                console.log("Got apartments!");
                 res.send(apartmentsToReturn);
             });
         })
