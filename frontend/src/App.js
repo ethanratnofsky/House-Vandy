@@ -132,7 +132,7 @@ const App = () => {
             setAllApartments(sortApartments(APARTMENTS));
         } else {
             console.log("Fetching apartment data from database...");
-            fetch("http://localhost:3000/scraper/getApartments")
+            fetch("http://0.0.0.0:3000/scraper/getApartments")
                 .then((response) => response.json())
                 .then((data) => {
                     console.log("Successfully fetched apartment data from database: ");
