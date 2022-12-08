@@ -1,5 +1,5 @@
 //Headers: Imports go here
-require("../Apartment");
+require("./Apartment");
 const cheerios = require("cheerio");
 const axios = require("axios");
 const mongoose = require("mongoose");
@@ -11,77 +11,63 @@ async function main() {
     await mongoose.connect(
         "mongodb+srv://sneh:oQ9sfXWUdfrItMdv@researchproject.hisvha9.mongodb.net/cloud?retryWrites=true&w=majority"
     );
-    Apartment.deleteMany({ apartmentName: "Elliston 23" })
+    Apartment.deleteMany({ apartmentName: "Acklen West End" })
         .then(function () {
             console.log("Data deleted"); // Success
         })
         .catch(function (error) {
             console.log(error); // Failure
         });
-    apartments = await ellistonScraper();
+    apartments = await acklenScraper();
     apartments.forEach(async (apartment) => {
-        await Apartment.create(apartment);
+        Apartment.create(apartment);
     });
     console.log(apartments);
 }
 
-// Scrape data from Elliston
-async function ellistonScraper() {
+// Scrape data from Acklen West End
+async function acklenScraper() {
     // Get the HTML from the Artemis website
-    const response = await axios.get("https://www.elliston23apts.com/floorplans", {
-        headers: { "Accept-Encoding": "application/json" },
-    });
+    const $ = cheerios.load(
+        await getPage(
+            "https://www.maac.com/available-apartments/?propertyId=662122&Bedroom=undefined%20Bed"
+        )
+    );
 
-    const $ = cheerios.load(response.data);
-
-    const apartmentsListings = $(".pb-4.mb-2.col-12.col-sm-6.col-lg-4.fp-container");
+    const apartmentsListings = $(".apartment.apartment--no-layout.loaded");
 
     let apartment_info = [];
 
     apartmentsListings.each(function () {
         const apartment = $(this);
-        apartmentPrice = apartment
-            .find("div.card.text-center.h-100")
-            .find("div.card-body")
-            .find("p.font-weight-bold.mb-1.text-md")
-            .text();
+        apartmentPrice = apartment.find("div.apartment__price").text();
         apartmentPrice = apartmentPrice.replace(/[^0-9]/g, "");
         if (apartmentPrice == "") {
             return;
         }
         apartmentPrice = parseInt(apartmentPrice);
+
         let apartmentLink = apartment
-            .find("h2.card-title.h4.font-weight-bold.text-capitalize")
-            .text();
-        apartmentLink = apartmentLink.replace(/\s/g, "");
-        apartmentLink = apartmentLink.toLowerCase();
-        apartmentLink = "https://www.elliston23apts.com/floorplans/" + apartmentLink;
+            .find("div.apartment__ctas")
+            .find("div.apartment__ctas-content")
+            .find("div.apartment__applyFix")
+            .find("a")
+            .attr("href");
 
         let apartmentBedrooms = apartment
-            .find("div.card.text-center.h-100")
-            .find("div.card-header.bg-transparent.border-bottom-0.pt-4.pb-0")
-            .find("ul")
-            .find("li.list-inline-item.mr-2")
+            .find("div.p1.apartment__unit-description-text")
             .first()
             .text();
         let apartmentBathrooms = apartment
-            .find("div.card.text-center.h-100")
-            .find("div.card-header.bg-transparent.border-bottom-0.pt-4.pb-0")
-            .find("ul")
-            .find("li.list-inline-item.mr-2:nth-child(2)")
+            .find("div.p1.apartment__unit-description-text:nth-child(2)")
             .text();
         apartmentBathrooms = parseInt(apartmentBathrooms.replace(/[^0-9.]/g, ""));
 
         let apartmentSquareFeet = apartment
-            .find("div.card.text-center.h-100")
-            .find("div.card-header.bg-transparent.border-bottom-0.pt-4.pb-0")
-            .find("ul")
-            .find("li.list-inline-item:nth-child(3)")
+            .find("div.p1.apartment__unit-description-text:nth-child(3)")
             .text();
         apartmentSquareFeet = apartmentSquareFeet.replace(/[^0-9.]/g, "");
-        if (apartmentSquareFeet.length >= 5) {
-            apartmentSquareFeet = apartmentSquareFeet.substring(0, 4);
-        }
+
         apartmentSquareFeet = parseInt(apartmentSquareFeet);
 
         apartmentBedrooms = apartmentBedrooms.replace(/[^0-9.]/g, "");
@@ -95,7 +81,7 @@ async function ellistonScraper() {
             numBeds: apartmentBedrooms,
             numBaths: apartmentBathrooms,
             squareFeet: apartmentSquareFeet,
-            apartmentName: "Elliston 23",
+            apartmentName: "Acklen West End",
             url: apartmentLink,
         });
     });
@@ -115,6 +101,5 @@ async function getPage(url) {
 
 main().then(() => {
     console.log("Done");
-    process.exit() 
 });
-
+setTimeout(() => {  process.exit();; }, 15000);
