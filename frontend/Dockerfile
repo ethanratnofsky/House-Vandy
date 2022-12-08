@@ -14,4 +14,4 @@ COPY . .
 EXPOSE 8080
 
 # Start the frontend server
-CMD [ "npm", "start"]
+CMD [ "npm", "start" ]
