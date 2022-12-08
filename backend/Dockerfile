@@ -5,13 +5,13 @@ FROM node
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci
 
 # Copy all files from current directory to container
 COPY . .
 
-# Expose port 8080
-EXPOSE 8080
+# Expose port 3000
+EXPOSE 3000
 
-# Start the frontend server
-CMD [ "npm", "start"]
+# Start the backend server
+CMD [ "node", "app.js"]
