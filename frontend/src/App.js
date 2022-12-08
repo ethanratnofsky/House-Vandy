@@ -1,3 +1,5 @@
+// Author(s): Ethan Ratnofsky (90%), Ethan Han (10%)
+
 // Packages
 import React, { useEffect, useState } from "react";
 import Select from "react-select";

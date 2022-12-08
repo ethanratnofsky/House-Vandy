@@ -1,3 +1,5 @@
+# Author(s): Ethan Ratnofsky
+
 # Base off NodeJS image
 FROM node
 

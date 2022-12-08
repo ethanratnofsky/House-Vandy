@@ -1,3 +1,5 @@
+// Author(s): Ethan Ratnofsky (50%), Ethan Han (50%)
+
 const APARTMENTS = [
     {
         apartmentName: "Aertson Midtown",

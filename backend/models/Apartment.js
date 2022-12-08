@@ -1,3 +1,5 @@
+// Author(s): Sneh Patel
+
 // Require Mongoose
 const mongoose = require("mongoose");
 

@@ -1,3 +1,4 @@
+// Author(s): Ethan Ratnofsky
 // Reference: https://blog.bitsrc.io/create-react-app-without-create-react-app-b0a5806a92
 
 const path = require("path");
