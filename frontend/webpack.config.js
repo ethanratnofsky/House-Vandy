@@ -32,10 +32,11 @@ module.exports={
      */
     target: "web",
     devServer: {
+        host: "0.0.0.0",
         /** "port" 
          * port of dev server
         */
-        port: "8091",
+        port: "8080",
         /** "static" 
          * This property tells Webpack what static file it should serve
         */
@@ -53,7 +54,8 @@ module.exports={
         /** "liveReload"
          * disable live reload on the browser. "hot" must be set to false for this to work
         */
-        liveReload: true
+        liveReload: true,
+        https: true
     },
     resolve: {
         /** "extensions" 
