@@ -1,0 +1,23 @@
+# Base off NodeJS image
+FROM node
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Update packages and install cron
+RUN apt-get update && apt-get install cron -y 
+
+# Copy Apartment model
+COPY Apartment.js ./
+
+# Copy scraping script
+COPY scrapeAcklen.js ./scrape.js
+
+# Run crontab
+RUN crontab crontab
+
+# Run cron job
+CMD [ "cron", "-f" ]
