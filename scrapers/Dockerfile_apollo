@@ -7,14 +7,17 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
-# Update packages and install cron
-RUN apt-get update && apt-get install cron -y 
-
 # Copy Apartment model
 COPY Apartment.js ./
 
 # Copy scraping script
 COPY scrapeApollo.js ./scrape.js
+
+# Update packages and install cron
+RUN apt-get update && apt-get install cron -y
+
+# Copy crontab
+COPY crontab ./
 
 # Run crontab
 RUN crontab crontab
